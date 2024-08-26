@@ -1,15 +1,20 @@
 var fs = require('fs');
+var path = require('path');
 function printFolderContents(passedPath, indent) {
     if (indent === void 0) { indent = 0; }
-    fs.readdirSync(passedPath)
+    var absolutePath = path.resolve(passedPath);
+    console.log('absolutePath ---', absolutePath);
+    fs.readdirSync(absolutePath)
         .forEach(function (file) {
-        var isDirectory = fs.lstatSync("".concat(passedPath, "/") + file.toString()).isDirectory();
+        var filePath = path.join(absolutePath, file);
+        console.log('filePath ---', filePath);
+        var isDirectory = fs.lstatSync(filePath).isDirectory();
         var icon = isDirectory ? '📁' : '📄';
-        console.log("".concat(' '.repeat(indent), " ").concat(icon), file);
+        // console.log(`${' '.repeat(indent)} ${icon}`, file);
         if (isDirectory) {
-            printFolderContents("".concat(passedPath, "/") + file.toString(), indent + 2);
+            printFolderContents(filePath, indent + 2);
         }
-        return;
     });
 }
-printFolderContents('node_modules');
+var folderPath = 'node_modules';
+printFolderContents(folderPath);
